@@ -1,0 +1,164 @@
+import pygame as pg
+import sys
+import random
+import time
+#______________________________________________________________
+#environment setting
+Screen_width=1500
+Screen_height=1000
+Screen = pg.display.set_mode((Screen_width, Screen_height))
+Screen_bgr=(225,225,225)
+
+#trees_color=(12, 167,137)
+#humanactivity_color=(254,244,69)
+#animal_color=(255, 147, 0)
+#building_color=(128, 128 ,128)
+c1=(96, 25, 134)
+c2=(3,110,184)
+c3=(126, 49, 142)
+c4 = (242,149,0)
+c5=(1,160,235)
+c6=(203,0,0)
+c7=(0,0,0)
+#d=(237, 113 ,27)
+list_color=[c1, c2, c3]
+
+
+#initialize the game
+def initialize_game (int_live_rate):
+    for i in range(0,500):
+        for j in range(0,500):
+            stage = random.random()
+            if stage>0.6:
+                pg.draw.rect(Screen,c1,((i-1)*10,(j-1)*10,10,10)) #(LOCATION, COLOR, 矩形范围，线宽，（x坐标，y坐标，宽度，高度）)
+            elif stage<0.1:
+                pg.draw.rect(Screen,c2,((i-1)*10,(j-1)*10,10,10))
+            elif 0.1<stage and stage<0.2:
+                pg.draw.rect(Screen,c3,((i-1)*10,(j-1)*10,10,10))
+            elif 0.2<stage and stage<0.3:
+                pg.draw.rect(Screen,c4,((i-1)*10,(j-1)*10,10,10))
+            elif 0.3<stage and stage<0.4:
+                pg.draw.rect(Screen,c5,((i-1)*10,(j-1)*10,10,10))
+            elif 0.4<stage and stage<0.5:
+                pg.draw.rect(Screen,c6,((i-1)*10,(j-1)*10,10,10))
+            else:
+                r_color_x = random.choice(list_color)
+                pg.draw.rect(Screen,c7,((i-1)*10,(j-1)*10,10,10))
+    return False
+
+#return amount of neighbors
+def get_c1_neighbor_num (x,y):
+    n_c1=0
+
+    neighbors_1=[(x+10,y+10),(x+10,y),(x+10,y-10),(x,y+10),(x,y-10),(x-10,y-10),(x-10,y),(x-10,y+10)]
+    for neighbor_l in neighbor_l:
+        color_c1=screen.get_at(neighbor_l)
+        if color_c1==c1:
+             n_c1+=l
+    return n_c1
+
+def get_c2_neighbor_num(x,y):
+    n_c2=0
+    neighbors=[(x+10,y+10),(x+10,y),(x+10,y-10),(x,y+10),(x,y-10),(x-10,y-10),(x-10,y),(x-10,y+10)]
+
+    for neighbor in neighbors:
+        color_c2=Screen.get_at(neighbor)
+        if color_c2==c2:
+            n_c2+=l
+    return n_c2
+
+def get_c3_neighbor_num(x,y):
+    n_c3=0
+
+    neighbors=[(x+10,y+10),(x+10,y),(x+10,y-10),(x,y+10),(x,y-10),(x-10,y-10),(x-10,y),(x-10,y+10)]
+
+    for neighbor in neighbors:
+        color_c3=Screen.get_at(neighbor)
+        if color_c3==c3:
+            n_c3+=l
+    return n_c3
+
+#def get_d_neighbor_num(x,y):
+#    n_d=0
+
+#    neighbors=[(x+10,y+10),(x+10,y),(x+10,y-10),(x,y+10),(x,y-10),(x-10,y-10),(x-10,y),(x-10,y+10)]
+
+#    for neighbor in neighbors:
+#        color_d=Screen.get_at(neighbor)
+#        if color_d==d:
+#            n_d+=l
+#    return n_d
+
+#define rules od generating next generation
+def newgeneration():
+
+    for x_sel in range(10, Screen_width-10):
+        num_c1 = get_c1_neighbor_num(x_sel, y_sel)
+        num_c2 = get_c2_neighbor_num(x_sel, y_sel)
+        num_c3 = get_c3_neighbor_num(x_sel, y_sel)
+#        num_c4 = get_d_neighbor_num(x_sel, y_sel)
+        color_i = Screen.get_at((x_sel, y_sel))
+
+        if color_i == c1:
+            if num_c2 < 3:
+                pg.draw.rect(Screen, c1, (x_sel, y_sel,10,10))
+            elif num_c1 + num_c3 > 5 and num_c2 < 2:
+                pg.draw.rect(Screen, c1,(x_sel, y_sel,10,10))
+            elif num_c1 > 4 :
+                r_color_o = random.choice(list_color)
+                pg.draw.rect(Screen, r_color_o,[x_sel, y_sel,10,10])
+
+        elif color_i == c2:
+            if num_c2 < 1:
+                pg.draw.rect(Screen, c1,(x_sel, y_sel,10,10))
+            elif num_c3 + num_c1 > 5 and num_c1 < 2:
+                pg.draw.rect(Screen, c1, (x_sel, y_sel,10,10))
+            elif num_c2 > 4 :
+                r_color_c = random.choice(list_color)
+                pg.draw.rect(Screen, r_color_c,(x_sel, y_sel,10,10))
+
+        elif color_i == c3:
+            if num_c3 < 2 and num_c2 > 5:
+                pg.draw.rect(Screen, c1, (x_sel, y_sel,10,10))
+            elif 4 < num_c3 < 7:
+                pg.draw.rect(Screen, c1,(x_sel, y_sel,10,10))
+            else:
+                r_color_g = random.choice(list_color)
+                pg.draw.rect(Screen, c1 ,(x_sel, y_sel,10,10))
+
+        else:
+            r_color_xx = random.choice(list_color)
+            pg.draw.rect(Screen, r_color_xx ,(x_sel, y_sel,10,10))
+
+#        elif color_i == d:
+#            if num_b < 1:
+#                pg.draw.rect(Screen, a(x_sel, y_sel, 10,10))
+#            elif num_b > 3:
+#                r_color_g = random.choice(list_color)
+#                pg.draw.rect(Screen, r_color_d, (x_sel, y_sel, 10,10))
+
+pg.init()
+pg.display.set_caption("color forest")
+Screen = pg.display.set_mode((Screen_width, Screen_height))
+Screen.fill(pg.Color("Black"))
+
+done = False
+clock = pg.time.Clock()
+clock.tick(5)
+initialize_game(0.1)
+
+#游戏循环
+while True:
+    events = pg.event.get()
+    for event in events:
+        if event.type == pg.QUIT:
+            pg.quit()
+            sys.exit()
+        elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    pg.quit()
+                    sys.exit()
+                if event.key == pg.K_SPACE:
+                    pg.quit()
+                    sys.exit()
+    pg.display.update()
